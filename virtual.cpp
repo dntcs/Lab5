@@ -1,9 +1,19 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 
 class Figure {
     public:
+        virtual string classname() {
+            return string("Figure");
+        }
+
+        virtual bool isA(string name) {
+            if (name == "Figure") {
+                return true;
+            } else return false;
+        }
 
         virtual void draw() {
             cout << "Figure\n";
@@ -21,6 +31,15 @@ class Figure {
 
 class Circle: public Figure {
     public:
+        string classname() {
+            return string("Circle");
+        }
+
+        virtual bool isA(string name) {
+            if (name == "Circle") {
+                return true;
+            } else return Figure::isA(name);
+        }
 
         void draw() {
             cout << "Circle\n";
@@ -32,14 +51,22 @@ class Circle: public Figure {
 };
 
 int main() {
-    Circle circle;
+    Figure circle;
     Figure* figure = &circle;
 
-    circle.draw();
-    figure->draw();
-    circle.show();
+    cout << figure->isA("Circle") << '\n';
+    cout << figure->isA("Figure") << '\n';
+    cout << (figure->classname() == "Figure") << '\n';
 
-    Figure* figure2 = new Circle;
-    delete figure2;
+    if (figure->isA("Circle")) {
+        Circle* circlePtr = static_cast<Circle*>(figure);
+        circlePtr->draw();
+    }
+
+    Circle* circlePtr = dynamic_cast<Circle*>(figure);
+    if (circlePtr != nullptr) {
+        circlePtr->draw();
+    }
+
     return 0;
 }
