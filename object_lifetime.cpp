@@ -49,6 +49,32 @@ void fun3(Base& obj) {
     cout << "fun3 по ссылке" << '\n';
 };
 
+Base returnLocalValue() {
+    Base local;
+    return local;
+}
+Base* returnLocalPtr() {
+    static Base local;
+    return &local;
+}
+Base& returnLocalRef() {
+    static Base local;
+    return local;
+}
+Base* returnHeapPtr() {
+    return new Base;
+}
+Base& returnHeapRef() {
+    Base* ptr = new Base;
+    return *ptr;
+}
+Base returnHeapValue() {
+    Base* ptr = new Base;
+    Base result(*ptr);
+    delete ptr;
+    return result;
+}
+
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     Base obj;
@@ -69,6 +95,23 @@ int main() {
     fun2(&child);
     fun3(child);
 
+
+    
+    Base* ptr = returnLocalPtr();
+    Base* ptr2 = returnLocalPtr();
+    Base& ref = returnLocalRef();
+    Base* heapPtr = returnHeapPtr();
+    Base& heapRef = returnHeapRef();
+    Base heapValue = returnHeapValue();
+
+    cout << (ptr == ptr2) << '\n'; // проверка адреса
+
+    cout << "Перед delete\n";
+    delete heapPtr;
+    delete &heapRef;
+    cout << "После delete\n";
+
+    Base returned = returnLocalValue();
     cout << "\nУничтожение объектов\n";
     return 0;
 }
